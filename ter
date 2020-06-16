@@ -1,0 +1,66 @@
+[1mdiff --git a/Codeapp2.R b/Codeapp2.R[m
+[1mindex a09032e..a62a310 100644[m
+[1m--- a/Codeapp2.R[m
+[1m+++ b/Codeapp2.R[m
+[36m@@ -1,28 +1,47 @@[m
+ [m
+[31m-dfES = readRDS(file="C:/Users/VC8GHA/Desktop/NewData/dataES.Rda")[m
+[32m+[m[32msource(file="C:/Users/edgar/Desktop/CodeApp/metadata.R")[m
+ [m
+[32m+[m[32mlink_path = "C:/Users/VC8GHA/Desktop/NewData/"[m
+ [m
+[31m-date = today()[m
+[32m+[m[32mtableau <- function(perim) {[m
+ [m
+[31m-date2 = date %m-% years(2)[m
+[32m+[m[32m  x = paste0("data",perim,".Rda")[m
+ [m
+[31m-datef = as.Date(as.yearqtr(date2))[m
+[32m+[m[32m  dfES = readRDS(file=paste0(link_path,x))[m
+ [m
+[31m-dfES2 = dfES %>%[m
+[31m-  filter(time >= datef)[m
+[32m+[m[32m  date = today()[m
+ [m
+[31m-dfES2 = df %>% [m
+[31m-  left_join(dfES2)[m
+[32m+[m[32m  date2 = date %m-% years(2)[m
+[32m+[m[41m  [m
+[32m+[m[32m  datef = as.Date(as.yearqtr(date2))[m
+ [m
+[31m-dfES2 = dfES2 %>% [m
+[31m-  select(name,time, value)[m
+[32m+[m[32m  dfES2 = dfES %>%[m
+[32m+[m[41m  [m
+[32m+[m[32m    filter(time >= datef)[m
+[32m+[m[41m  [m
+[32m+[m[32m  meta = metadata %>%[m
+[32m+[m[41m    [m
+[32m+[m[32m    filter(perimetre = perim)[m
+ [m
+[31m-dfES2 <- dfES2[-1,][m
+[32m+[m[32m  dfES2 = meta %>%[m[41m [m
+[32m+[m[41m  [m
+[32m+[m[32m    left_join(dfES2)[m
+ [m
+ [m
+[31m-dfES2 = dfES2 %>%[m
+[31m-  distinct() %>%[m
+[31m-  pivot_wider(., names_from = time, values_from = value)[m
+[32m+[m[32m  dfES2 = dfES2 %>%[m[41m [m
+[32m+[m[41m  [m
+[32m+[m[32m    select(name,time, value)[m
+[32m+[m
+[32m+[m
+[32m+[m[32m  dfES2 <- dfES2[-1,][m
+[32m+[m
+[32m+[m[32m  dfES2 = dfES2 %>%[m
+[32m+[m[41m  [m
+[32m+[m[32m    distinct() %>%[m
+[32m+[m[41m  [m
+[32m+[m[32m    pivot_wider(., names_from = time, values_from = value)[m[41m [m
+[32m+[m[41m  [m
+[32m+[m[32m  return(dfES2)}[m
+ [m
+ [m
+ [m

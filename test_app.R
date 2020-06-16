@@ -14,19 +14,20 @@ ui <- fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-      helpText("Choisir un tableau selon le périmètre voulu"),
+      helpText("Choisir un tableau selon le pÃ©rimÃ¨tre voulu"),
       
       selectInput("var", 
-                  label = "Choisir un périmètre",
+                  label = "Choisir un pÃ©rimÃ¨tre",
                   choices = c('AL','BENL','CN','COMEXT','CONSO',
                               'DM','EM','EMPL','ES','FI','FITAUX',
                               'INV','IT','JP','OIL','PIBFR','PROD',
                               'REV','SYN','UK','US','ZE'),
                   selected = 'AL'),
     
-    mainPanel(textOutput("selected_var"))
-  )
-))
+    
+  ), mainPanel = mainPanel(textOutput("selected_var"))
+)
+)
 
 server <- function(input, output) {
   
