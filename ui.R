@@ -1,36 +1,136 @@
+
+source(file="C:/Users/edgar/Desktop/CodeApp/Codeapp2.R")
+
+
+rm(list = ls())
+library(shiny)
 library(shinydashboard)
-library(shinydashboardPlus)
-library(shinyWidgets)
-library(shinyjs)
-library(plotly)
-library(ggthemes)
-library(eurostat)
-library(rsdmx)
 
-
-
-ui <- fluidPage(
-  titlePanel("Tableau de la conjoncture"),
-  
-  sidebarLayout(
-    sidebarPanel(
-      helpText("Choisir un tableau selon le périmètre voulu"),
-      
-      selectInput("var", 
-                  label = "Choisir un périmètre",
-                  choices = c('AL','BENL','CN','COMEXT','CONSO',
-                              'DM','EM','EMPL','ES','FI','FITAUX',
-                              'INV','IT','JP','OIL','PIBFR','PROD',
-                              'REV','SYN','UK','US','ZE'),
-                  selected = 'AL'),
+shinyUI(
+  dashboardPage(
+    dashboardHeader(title = "Tableaux de la conjoncture"),
     
-    mainPanel(textOutput("selected_var"))
-  )
-))
+    dashboardSidebar(width = 285,
+                     sidebarMenu(id = "tabs_menu",
+                                 menuItem("AL",
+                                          tabName = "AL",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("BENL",
+                                          tabName = "BENL",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("CN",
+                                          tabName = "CN",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("COMEXT",
+                                          tabName = "COMEXT",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("CONSO",
+                                          tabName = "CONSO",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("DM",
+                                          tabName = "DM",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("EM",
+                                          tabName = "EM",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("EMPL",
+                                          tabName = "EMPL",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("ES",
+                                          tabName = "ES",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("FI",
+                                          tabName = "FI",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("FITAUX",
+                                          tabName = "FITAUX",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("INV",
+                                          tabName = "INV",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F), 
+                                 menuItem("IT",
+                                          tabName = "IT",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("JP",
+                                          tabName = "JP",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("OIL",
+                                          tabName = "OIL",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("PIBFR",
+                                          tabName = "PIBFR",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("PROD",
+                                          tabName = "PROD",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("REV",
+                                          tabName = "REV",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("SYN",
+                                          tabName = "SYN",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("UK",
+                                          tabName = "UK",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("US",
+                                          tabName = "US",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F),
+                                 menuItem("ZE",
+                                          tabName = "ZE",
+                                          icon = icon("fas fa-sitemap"),
+                                          startExpanded = F)
+                             
+                     )
+    ),
+    ## Body content
+    dashboardBody(
+      tabItems(
+          
+          tabItem(tabName ="AL",fluidRow(box(DT::dataTableOutput("table")))),
+          tabItem(tabName ='BENL',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='CN',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='COMEXT',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='CONSO',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='DM',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='EM',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='EMPL',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='ES',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='FI',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='FITAUX',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='INV',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='IT',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='JP',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='OIL',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='PIBFR',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='PROD',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='REV',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='SYN',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='UK',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='US',fluidRow(DT::dataTableOutput("table"))),
+          tabItem(tabName ='ZE',fluidRow(DT::dataTableOutput("table")))
+      )
+    )
+  ))
 
-server <- function(input, output) {
-  
-}
 
-# Run the app ----
-shinyApp(ui = ui, server = server)

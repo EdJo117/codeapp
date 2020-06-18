@@ -1,22 +1,22 @@
 shinyServer(function(input,output,session) {
-
-
+  
+  
   observe({
     Print(input$select_title)
-  })
+  
 
-  observe({
-    Print(DT::renderDataTable({
-                data = tableau(input$perim,link_path)
-                DT::datatable({data})
-              }))
-  })
-
+  
   # Filter data based on selections
-
-
-
-
+  output$table <- DT::renderDataTable({
+      dataE <- loaddata("ES")
+      dataE <- data %>%
+        distinct() %>%
+        pivot_wider(., names_from = time, values_from = value)
+      DT::datatable({dataE})
+    })
+  })
+  
+  
+  
   }
 )
-
