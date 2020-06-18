@@ -1,6 +1,4 @@
-library(tidyverse)
-
-df = data.frame(name = NA, id = NA, pays = NA)
+df = data.frame(name = NA, id = NA, perimetre = NA)
 df[nrow(df)+1,] = c("Produit interieur brut","es.td.b1g_7ch_ind","ES") 
 df[nrow(df)+1,] = c("Consommation privee","es.td.p3_s145_7ch_ind","ES")
 df[nrow(df)+1,] = c("Investissement","es.td.p51g_7ch_ind","ES")
@@ -28,13 +26,4 @@ df[nrow(df)+1,] = c("Deflateur de la consommation","es.td.p3_s145_9","ES")
 df[nrow(df)+1,] = c("Taux d'epargne","es.tx_ep","ES")
 df[nrow(df)+1,] = c("Pouvoir d'achat","es.td.b6g_s145_7","ES")
 
-df[nrow(df)+1,] = c("Produit interieur brut","es.td.b1g_7ch_ind","AL") 
-df[nrow(df)+1,] = c("Consommation privee","es.td.p3_s145_7ch_ind","AL")
-
-
 metadata = df
-
-metadata <- metadata[-1,]
-
-
-test = metadata["pays"] %>% distinct()
