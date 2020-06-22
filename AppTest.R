@@ -2,6 +2,7 @@
 rm(list = ls())
 
 library(tis)
+library(rhandsontable)
 
 # source(file="C:/Users/VC8GHA/Desktop/Codeapp2.R")
 
@@ -31,7 +32,7 @@ ui <- fluidPage(
       textOutput("selected_var")
     )
   ),
-  DT::dataTableOutput("table"),
+  DT::dataTableOutput("val"),
   
   rHandsontableOutput("hot")
 )
@@ -45,27 +46,43 @@ server <- function(input, output) {
   observe({
     
     Print(input$var)
-    
     data <- loaddata(input$var)
     
     data2 <- data %>%
       distinct() %>%
       pivot_wider(., names_from = time, values_from = value)
-    
-    dt =  DT::datatable({data2})
   
-  output$table <- DT::renderDataTable(dt)
+    RE <- reactiveVal({
+      val =  DT::datatable({data2})
+  })  
+    
+  output$val <- DT::renderDataTable({RE$val})
   
   output$hot <- renderRHandsontable({
     
-    data = data %>% group_by(name) %>% mutate(Growth = (value - lag(value))/lag(value))
+    data = data %>%
+      group_by(name) %>%
+      mutate(Growth = 100*(value - dplyr::lag(value))/dplyr::lag(value))
     
-    data = data %>% select(name,time,Growth) %>% distinct() %>% pivot_wider(names_from = time, values_from = Growth)
+    data = data %>%
+      select(name, time, Growth) %>%
+      distinct() %>%
+      pivot_wider(names_from = time, values_from = Growth)
+    
+    # data[1,-1]
+    
+    # c(100,-100)
+    data_chart = data[1,-1]
+    data_chart = data_chart[!is.na(data_chart)]
     
     data2$chart = c(sapply(1:26,
-                          function(x) jsonlite::toJSON(list(values= as.numeric(data[1,-1]),options = list(type = "line", width = 50, height = 50)))))
+                          function(x) jsonlite::toJSON(list(values= as.numeric(data_chart),
+                                                            options = list(type = "bar", width = 200,
+                                                                           height = 50)))))
+    
     rhandsontable(data2, rowHeaders = NULL, width = 500, height = 300) %>%
-      hot_col("chart", renderer = htmlwidgets::JS("renderSparkline"))})
+      hot_col("chart", renderer = htmlwidgets::JS("renderSparkline"))
+    })
   
   })
 
@@ -75,8 +92,8 @@ server <- function(input, output) {
     filename = function() {
       paste('data_',  input$var, Sys.Date(), '.csv', sep='')
     },
-    content = function(con) {
-      write.csv(data, con)
+    content = function(file) {
+      write.csv(RE$val, file, row.names = FALSE)
     }
   )
   

@@ -1,4 +1,10 @@
 
+rm(list = ls())
+
+
+source(file="C:/Users/edgar/Desktop/CodeApp/Codeapp2.R")
+
+
 library(shiny)
 library(shinydashboard)
 library(shinydashboardPlus)
