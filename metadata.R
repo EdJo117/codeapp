@@ -26,4 +26,35 @@ df[nrow(df)+1,] = c("Deflateur de la consommation","es.td.p3_s145_9","ES")
 df[nrow(df)+1,] = c("Taux d'epargne","es.tx_ep","ES")
 df[nrow(df)+1,] = c("Pouvoir d'achat","es.td.b6g_s145_7","ES")
 
+
+df[nrow(df)+1,] = c("Produit interieur brut","al.pib","AL")
+df[nrow(df)+1,] = c("Consommation privee","al.conso","AL")
+df[nrow(df)+1,] = c("Investissement","al.fbcf","AL")
+df[nrow(df)+1,] = c("Consommation publique","al.consopub","AL")
+df[nrow(df)+1,] = c("Exportations","al.export","AL")
+df[nrow(df)+1,] = c("Importations","al.import","AL")
+df[nrow(df)+1,] = c("Demande interieure hors stocks","al.di.contrib","AL")
+df[nrow(df)+1,] = c("Variation de stocks","al.stocks.contrib","AL")
+df[nrow(df)+1,] = c("Commerce exterieur","al.comext.contrib","AL")
+df[nrow(df)+1,] = c("Investissement en construction","al.fbcfcons","AL")
+df[nrow(df)+1,] = c("Investissement en equipement","al.fbcfeq","AL")
+df[nrow(df)+1,] = c("Investissement autre","al.fbcfautre","AL")
+df[nrow(df)+1,] = c("RDB","al.rdb_insee","AL")
+df[nrow(df)+1,] = c("Emploi salarie","al.emploi_sal","AL")
+df[nrow(df)+1,] = c("Salaires","al.smpt","AL")
+df[nrow(df)+1,] = c("Taux d'activite","al.taux_activite","AL")
+df[nrow(df)+1,] = c("Population active","al.popact","AL")
+df[nrow(df)+1,] = c("Emploi total","al.emploi_total","AL")
+df[nrow(df)+1,] = c("Taux de chomage","al.tx_u_cnt","AL")
+df[nrow(df)+1,] = c("Inflation energetique","al.ipch_energie_t","AL")
+df[nrow(df)+1,] = c("Inflation alimentaire","al.ipch_alim_t","AL")
+df[nrow(df)+1,] = c("Inflation sous-jacente","al.ipch_sj_t","AL")
+df[nrow(df)+1,] = c("Inflation totale","al.ipch_t","AL")
+df[nrow(df)+1,] = c("Deflateur de la consommation","al.def_conso","AL")
+df[nrow(df)+1,] = c("Pouvoir d'achat","al.pvr_achat","AL")
+df[nrow(df)+1,] = c("Taux d'epargne","al.tx_s_maison_b","AL")
+
+
+
+
 metadata = df

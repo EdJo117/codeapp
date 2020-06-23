@@ -8,7 +8,7 @@ library(tidyverse)
 source(file="C:/Users/edgar/Desktop/CodeApp/metadata.R")
 
 loaddata <- function(perim) {
-  if (perim %in% c("AL","BENL","CN","DM","EM","ES","FI","INF","IT","JP","OIL","SYN","UK","US","ZE")){
+  if (perim %in% c("AL","BENL","CN","DM","EM","ES","FI","INV","IT","JP","OIL","SYN","UK","US","ZE")){
     
   # link_data = "C:/Users/VC8GHA/Desktop/CodeApp/data/Rdatainternationaux"
   
@@ -135,5 +135,27 @@ dataF_ = dataF_[,!(names(dataF_) %in% drop)]
   
   return(dataF_)
 }
+
+rhandsondata <- function (data,data2) { data = data %>%
+  group_by(name) %>%
+  mutate(Growth = 100*(value - dplyr::lag(value))/dplyr::lag(value))
+
+data = data %>%
+  select(name, time, Growth) %>%
+  distinct() %>%
+  pivot_wider(names_from = time, values_from = Growth)
+
+# data[1,-1]
+
+n = nrow(data2[,1])
+
+data2$chart = sapply(1:n, function(x) jsonlite::toJSON(list(values=rnorm(10))))
+
+for (i in c(1:n)) {data_chart = data[i,-1]
+data_chart = unlist(data_chart)
+data_chart = data_chart[!is.na(data_chart)]
+data2$chart[i] <- jsonlite::toJSON(list(values=as.numeric(data_chart),options = list(type = "bar"),na="null")) }
+
+return(data2)}
 
 
