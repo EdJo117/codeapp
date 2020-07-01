@@ -3,14 +3,14 @@ library(lubridate)
 library(zoo)
 library(tidyverse)
 
-# source(file="C:/Users/VC8GHA/Desktop/CodeApp/data/metadata.R")
+#source(file="C:/Users/VC8GHA/Desktop/CodeApp/data/metadata.R")
 
 source(file="C:/Users/edgar/Desktop/CodeApp/metadata.R")
 
 loaddata <- function(perim) {
   if (perim %in% c("AL","BENL","CN","DM","EM","ES","FI","FItaux","INV","IT","JP","OIL","SYN","UK","US","ZE")){
     
-    # link_data = "C:/Users/VC8GHA/Desktop/CodeApp/data/Rdatainternationaux"
+    #link_data = "C:/Users/VC8GHA/Desktop/CodeApp/data/Rdatainternationaux"
     
     link_data = "C:/Users/edgar/Desktop/chiffres/data/Rdata internationaux"  
     
@@ -66,7 +66,7 @@ loaddata <- function(perim) {
     
   }else {
     
-    # link_data = "C:/Users/VC8GHA/Desktop/CodeApp/data/syntheseGFOU"
+    #link_data = "C:/Users/VC8GHA/Desktop/CodeApp/data/syntheseGFOU"
     
     link_data = "C:/Users/edgar/Desktop/chiffres/data/syntheseGFOU"    
     
@@ -136,25 +136,49 @@ loaddata <- function(perim) {
   return(dataF_)
 }
 
-rhandsondata <- function (data,data2) { 
+# 
+# 
+annee <- function (al) {
   
-  meta = metadata %>%
-    select(name,Operations) %>%
-    distinct()
   
-  data = data %>%
-    left_join(meta)
+  al$time = format(al$time,"%Y")
   
-  data = data %>%
-    group_by(name) %>%
-    mutate(Special = get(Operations)(value))
+  datest = data.frame(name = NA, time = NA, valeur = NA)
   
-  data = data %>%
-    select(name, time, Special) %>%
-    distinct() %>%
-    pivot_wider(names_from = time, values_from = Special)
+  L = as.vector((al %>%
+                   select(name) %>%
+                   distinct()))
+  Lname <- c()
+  for (i in 1:nrow(L)) {
+    Lname[[i]] <- L[i,]
+  }
+  Lname = as.list(Lname)
+  
+  
+  L0 = as.vector((al %>%
+                    select(time) %>%
+                    distinct()))
+  Ltime <- c()
+  for (i in 1:nrow(L0)) {
+    Ltime[[i]] <- L0[i,]
+  }
+  Ltime = as.list(Ltime)
+  
+  Ltime = Ltime[!is.na(Ltime)]
+  
+  datest = data.frame(name = NA, time = NA, valeur = NA)
+  for (i in Lname) { if (op(i) == "growth") {for (j in Ltime) {datest[nrow(datest)+1,] = c(i,j,sum((al %>% 
+                                                                                                      subset(al$name == i & al$time == j))$value))}}
+    else {for (j in  Ltime) {datest[nrow(datest)+1,] = c(i,j,mean((al %>% 
+                                                                     subset(al$name == i & al$time == j))$value))}}}
+  
+  datest = datest %>% pivot_wider(names_from = time, values_from = valeur)
+  
+  datest = datest[-1,]
+  datest = datest[,-2]
+  return(datest)}
 
-# data[1,-1]
+rhandsondata2 <- function (data,data2) { 
 
 n = nrow(data2[,1])
 
@@ -173,7 +197,28 @@ for (i in c(1:n)) {
 }
 
 return(data2)
-}
+ }
+
+
+rhandsondata1 <- function(data) {  
+  
+  meta = metadata %>%
+  select(name,Operations) %>%
+  distinct()
+
+data = data %>%
+  left_join(meta)
+
+data = data %>%
+  group_by(name) %>%
+  mutate(Variations_trimestrielles = get(Operations)(value))
+
+data = data %>%
+  select(name, time, Variations_trimestrielles) %>%
+  distinct() %>%
+  pivot_wider(names_from = time, values_from = Variations_trimestrielles)
+
+return(data)}
 
 listeapp <- function(y) {if (y == "International") {L = c('AL','BENL','CN',
                                                           'DM','EM','ES','FI','FItaux',
@@ -183,7 +228,5 @@ listeapp <- function(y) {if (y == "International") {L = c('AL','BENL','CN',
               'EMPL','PIBFR','PROD',
               'REV')}
   return(L)}
-
-
 
 

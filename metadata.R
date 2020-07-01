@@ -431,6 +431,27 @@ op <- function (var) {
 df$Operations = sapply(as.list(df$name), function(x) op(x))
 
 
+Liste = c("RDB",	
+  "Emploi salarie",	
+  "Salaires",
+  "Salaires nominaux",
+  "Salaires reels",
+  "Taux d'activite",
+  "Population active",	
+  "Emploi total",	
+  "Taux de chomage",	
+  "Inflation energetique",	
+  "Inflation alimentaire",
+  "Inflation sous-jacente",	
+  "Inflation totale",	
+  "Deflateur de la consommation",	
+  "Pouvoir d'achat",	
+  "Taux d'epargne")
+
+tabl <- function (perim) {if (perim %in% Liste) {return(2)} else {return(1)}  }
+
+df$Tableau = sapply(as.list(df$name), function(x) tabl(x))
+
 # Nommer metadata
 
 metadata = df
