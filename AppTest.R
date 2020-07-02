@@ -17,7 +17,10 @@ ui <- dashboardPage(
                                                                             'INV','IT','JP','OIL',
                                                                             'SYN','UK','US','ZE')))),
       downloadButton('downloadData', 'Download'),
-      tags$style(".skin-blue .sidebar a { color: #444; }")
+      tags$style(".skin-blue .sidebar a { color: #444; }"),
+      fluidRow(column(7, numericInput("num", 
+                                      "Choisir la significativité des décimales", 
+                                      value = 1)))
     )
   ),
   dashboardBody(
@@ -78,7 +81,8 @@ server <- function(input, output, session) {
                     filter(Tableau == tableau_id))
 
       output[[paste0("table", tableau_id)]] <- DT::renderDT({DT::datatable(data3, extensions = 'FixedColumns', options = list(scrollX = TRUE,
-                                                                                                                                                 fixedColumns = list(leftColumns = 2, rightColumns = 0)))})
+                                                                                                                                                 fixedColumns = list(leftColumns = 2, rightColumns = 0)))%>%
+          DT::formatStyle(names(data3),lineHeight='150%') })
     }
 
     data4 = data %>%
@@ -86,9 +90,9 @@ server <- function(input, output, session) {
       pivot_wider(., names_from = time, values_from = value)
     
     
-    # output$tabletest <- DT::renderDT({DT::datatable(merge(data2,annee(input$perim),by="name"), extensions = 'FixedColumns', options = list(scrollX = TRUE,
     
-    rhan1 = rhandsondata1(data)                                                                                                         # fixedColumns = list(leftColumns = 2, rightColumns = 0)))})
+    rhan1 = rhandsondata1(data,input$num)
+    
     rhan2 = rhandsondata2(rhan1, data4)
     
     output$trim <- DT::renderDT({DT::datatable(rhan1, extensions = 'FixedColumns', options = list(scrollX = TRUE,
@@ -127,7 +131,5 @@ server <- function(input, output, session) {
   )}
 
 shinyApp(ui, server)
-
-
 
 

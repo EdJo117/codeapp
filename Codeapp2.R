@@ -200,7 +200,7 @@ return(data2)
  }
 
 
-rhandsondata1 <- function(data) {  
+rhandsondata1 <- function(data,i) {  
   
   meta = metadata %>%
   select(name,Operations) %>%
@@ -212,6 +212,9 @@ data = data %>%
 data = data %>%
   group_by(name) %>%
   mutate(Variations_trimestrielles = get(Operations)(value))
+
+data$Variations_trimestrielles = sapply(data$Variations_trimestrielles, function(x) signif(x, digits = i))
+
 
 data = data %>%
   select(name, time, Variations_trimestrielles) %>%
