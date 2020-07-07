@@ -3,16 +3,16 @@ library(lubridate)
 library(zoo)
 library(tidyverse)
 
-#source(file="C:/Users/VC8GHA/Desktop/CodeApp/data/metadata.R")
+source(file="C:/Users/VC8GHA/Desktop/CodeApp/data/metadata.R")
 
-source(file="C:/Users/edgar/Desktop/CodeApp/metadata.R")
+# source(file="C:/Users/edgar/Desktop/CodeApp/metadata.R")
 
 loaddata <- function(perim) {
   if (perim %in% c("AL","BENL","CN","DM","EM","ES","FI","FItaux","INV","IT","JP","OIL","SYN","UK","US","ZE")){
     
-    #link_data = "C:/Users/VC8GHA/Desktop/CodeApp/data/Rdatainternationaux"
+    link_data = "C:/Users/VC8GHA/Desktop/CodeApp/data/Rdatainternationaux"
     
-    link_data = "C:/Users/edgar/Desktop/chiffres/data/Rdata internationaux"  
+    #link_data = "C:/Users/edgar/Desktop/chiffres/data/Rdata internationaux"  
     
     list_file = list.files(link_data)
     
@@ -66,9 +66,9 @@ loaddata <- function(perim) {
     
   }else {
     
-    #link_data = "C:/Users/VC8GHA/Desktop/CodeApp/data/syntheseGFOU"
+    link_data = "C:/Users/VC8GHA/Desktop/CodeApp/data/syntheseGFOU"
     
-    link_data = "C:/Users/edgar/Desktop/chiffres/data/syntheseGFOU"    
+    # link_data = "C:/Users/edgar/Desktop/chiffres/data/syntheseGFOU"    
     
     list_file = list.files(link_data)
     
@@ -179,49 +179,51 @@ annee <- function (al) {
   return(datest)}
 
 rhandsondata2 <- function (data,data2) { 
-
-n = nrow(data2[,1])
-
-data2$chart = sapply(1:n, function(x) jsonlite::toJSON(list(values=rnorm(10))))
-
-for (i in c(1:n)) {
-  data_chart = data[i, -1]
-  data_chart = unlist(data_chart)
-  data_chart = data_chart[!is.na(data_chart)]
-  data2$chart[i] <-
-    jsonlite::toJSON(list(
-      values = as.numeric(data_chart),
-      options = list(type = "bar"),
-      na = "null"
-    ))
+  
+  n = nrow(data2[,1])
+  
+  data2$chart = sapply(1:n, function(x) jsonlite::toJSON(list(values=rnorm(10))))
+  
+  for (i in c(1:n)) {
+    data_chart = data[i, -1]
+    data_chart = unlist(data_chart)
+    data_chart = data_chart[!is.na(data_chart)]
+    data2$chart[i] <-
+      jsonlite::toJSON(list(
+        values = as.numeric(data_chart),
+        options = list(type = "bar"),
+        na = "null"
+      ))
+  }
+  
+  data2 <- data2[, c("name", "chart",colnames(data2)[2:length(colnames(data2))-2])]
+  
+  return(data2)
 }
-
-return(data2)
- }
 
 
 rhandsondata1 <- function(data,i) {  
   
   meta = metadata %>%
-  select(name,Operations) %>%
-  distinct()
-
-data = data %>%
-  left_join(meta)
-
-data = data %>%
-  group_by(name) %>%
-  mutate(Variations_trimestrielles = get(Operations)(value))
-
-data$Variations_trimestrielles = sapply(data$Variations_trimestrielles, function(x) signif(x, digits = i))
-
-
-data = data %>%
-  select(name, time, Variations_trimestrielles) %>%
-  distinct() %>%
-  pivot_wider(names_from = time, values_from = Variations_trimestrielles)
-
-return(data)}
+    select(name,Operations) %>%
+    distinct()
+  
+  data = data %>%
+    left_join(meta)
+  
+  data = data %>%
+    group_by(name) %>%
+    mutate(Variations_trimestrielles = get(Operations)(value))
+  
+  data$Variations_trimestrielles = sapply(data$Variations_trimestrielles, function(x) signif(x, digits = i))
+  
+  
+  data = data %>%
+    select(name, time, Variations_trimestrielles) %>%
+    distinct() %>%
+    pivot_wider(names_from = time, values_from = Variations_trimestrielles)
+  
+  return(data)}
 
 listeapp <- function(y) {if (y == "International") {L = c('AL','BENL','CN',
                                                           'DM','EM','ES','FI','FItaux',
