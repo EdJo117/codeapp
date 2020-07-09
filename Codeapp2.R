@@ -3,16 +3,28 @@ library(lubridate)
 library(zoo)
 library(tidyverse)
 
-source(file="C:/Users/VC8GHA/Desktop/CodeApp/data/metadata.R")
+# source(file="C:/Users/VC8GHA/Desktop/CodeApp/data/metadata.R")
 
-# source(file="C:/Users/edgar/Desktop/CodeApp/metadata.R")
+source(file="C:/Users/edgar/Desktop/CodeApp/metadata.R")
 
-loaddata <- function(perim) {
+linkf <- function(perim) {
+  if (perim %in% c("AL","BENL","CN","DM","EM","ES","FI","FItaux","INV","IT","JP","OIL","SYN","UK","US","ZE")){    #link_data = "C:/Users/VC8GHA/Desktop/CodeApp/data/Rdatainternationaux"
+  
+  link_data = "C:/Users/edgar/Desktop/chiffres/data/Rdata internationaux" 
+  }
+else {#link_data = "C:/Users/VC8GHA/Desktop/CodeApp/data/syntheseGFOU"
+
+ link_data = "C:/Users/edgar/Desktop/chiffres/data/syntheseGFOU" 
+}
+  return(link_data)}
+
+
+loaddata <- function(perim,date) {
   if (perim %in% c("AL","BENL","CN","DM","EM","ES","FI","FItaux","INV","IT","JP","OIL","SYN","UK","US","ZE")){
     
-    link_data = "C:/Users/VC8GHA/Desktop/CodeApp/data/Rdatainternationaux"
+    #link_data = "C:/Users/VC8GHA/Desktop/CodeApp/data/Rdatainternationaux"
     
-    #link_data = "C:/Users/edgar/Desktop/chiffres/data/Rdata internationaux"  
+    link_data = "C:/Users/edgar/Desktop/chiffres/data/Rdata internationaux"  
     
     list_file = list.files(link_data)
     
@@ -22,8 +34,10 @@ loaddata <- function(perim) {
     
     test = file.info(list_path_file_al)
     
-    result = test %>%
-      filter(mtime == max(mtime))
+    if (date == today()) {result = test %>%
+      filter(mtime == max(mtime))}
+    else {result = test %>%
+      filter(mtime == date)}
     
     resultf = rownames(result)
     
@@ -66,9 +80,9 @@ loaddata <- function(perim) {
     
   }else {
     
-    link_data = "C:/Users/VC8GHA/Desktop/CodeApp/data/syntheseGFOU"
+    #link_data = "C:/Users/VC8GHA/Desktop/CodeApp/data/syntheseGFOU"
     
-    # link_data = "C:/Users/edgar/Desktop/chiffres/data/syntheseGFOU"    
+     link_data = "C:/Users/edgar/Desktop/chiffres/data/syntheseGFOU"    
     
     list_file = list.files(link_data)
     
@@ -76,8 +90,10 @@ loaddata <- function(perim) {
     
     test = file.info(list_path_file)
     
-    result = test %>% 
-      filter(mtime == max(mtime)) 
+    if (date == today()) {result = test %>%
+      filter(mtime == max(mtime))}
+    else {result = test %>%
+      filter(mtime == date)}
     
     resultf = rownames(result)
     
@@ -89,9 +105,6 @@ loaddata <- function(perim) {
     
     dataF = as.data.frame(t(data1))
     
-    # names(dataF) <- data2$name
-    
-    # dataF = dataF[-1,]
     
     trimest <- function(x) {
       x = sub("T", "Q", x)
@@ -136,8 +149,7 @@ loaddata <- function(perim) {
   return(dataF_)
 }
 
-# 
-# 
+ 
 annee <- function (al) {
   
   
@@ -177,6 +189,7 @@ annee <- function (al) {
   datest = datest[-1,]
   datest = datest[,-2]
   return(datest)}
+
 
 rhandsondata2 <- function (data,data2) { 
   
@@ -225,6 +238,7 @@ rhandsondata1 <- function(data,i) {
   
   return(data)}
 
+
 listeapp <- function(y) {if (y == "International") {L = c('AL','BENL','CN',
                                                           'DM','EM','ES','FI','FItaux',
                                                           'INV','IT','JP','OIL',
@@ -234,4 +248,67 @@ listeapp <- function(y) {if (y == "International") {L = c('AL','BENL','CN',
               'REV')}
   return(L)}
 
+
+comparedata <- function(dt1,dt2) {
+  x = nrow(dt1)
+  y = ncol(dt1)
+  ltest <- c(NA)
+  for (i in c(1:(x-1)))
+  {ltest <- append(ltest, c(NA))}
+  dt3 = data.frame(ltest)
+  for (j in c(1:(y-1)))
+  {dt3[,length(dt3[1,])+1] = ltest}
+  colnames(dt3) = colnames(dt1)
+  for (i in c(1:x)) {
+    for (j in c(1:y)) {
+      
+      if (is.na(dt1[i,j]) && is.na(dt2[i,j])) {dt3[i,j] = NA}
+      else if (is.na(dt1[i,j])) {dt3[i,j] = dt2[i,j]}
+      else if (is.na(dt2[i,j])) {dt3[i,j] = dt1[i,j]}
+      else if (dt1[i,j] != dt2[i,j]) {
+        dt3[i,j] = paste(dt1[i,j] ," || ", dt2[i,j])
+        }
+      else {dt3[i,j] = dt1[i,j]
+        }
+       
+    }
+  }
+  return(dt3)}
+
+comparedataf <- function(dt1,dt2) {
+
+  y1 = ncol(dt1)
+  y2 = ncol(dt2)
+  
+  if (y1 > y2) {dtf = cbind(comparedata(dt2,dt1[,1:y2]),dt1[,(y2+1):y1])}
+  else if (y2 > y1) {dtf = cbind(comparedata(dt1,dt2[,1:y1]),dt2[,(y1+1):y2])}
+  else {dtf = comparedata(dt1,dt2)}
+
+  return(dtf)}
+
+
+
+fcomp <- function(perim)  {if (perim %in% c("AL","BENL","CN","DM","EM","ES","FI","FItaux","INV","IT","JP","OIL","SYN","UK","US","ZE")){
+  
+  #link_data = "C:/Users/VC8GHA/Desktop/CodeApp/data/Rdatainternationaux"
+  
+  link_data = "C:/Users/edgar/Desktop/chiffres/data/Rdata internationaux"
+  
+  list_file = list.files(link_data)
+  
+  list_file_al = list_file[str_detect(list_file, paste0("^", perim))]
+}
+  
+  else {#link_data = "C:/Users/VC8GHA/Desktop/CodeApp/data/syntheseGFOU"
+  
+  link_data = "C:/Users/edgar/Desktop/chiffres/data/syntheseGFOU"    
+  
+  list_file_al = list.files(link_data)
+  
+  }
+  
+  return(c("Pas de comparaison",list_file_al)) }
+
+
+fcomp("AL")
 
