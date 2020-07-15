@@ -19,7 +19,7 @@ ui <- dashboardPage(
                                                                             'INV','IT','JP','OIL',
                                                                             'SYN','UK','US','ZE')))),
       fluidRow(
-        column(7, selectizeInput("comp", "Selectionner une base de données à comparer", fcomp("AL")))),
+        column(7, selectizeInput("comp", "Selectionner une base de données à comparer", c("Pas de comparaison")))),
       
       downloadButton('downloadData', 'Download'),
       tags$style(".skin-blue .sidebar a { color: #444; }"),
@@ -46,17 +46,23 @@ ui <- dashboardPage(
 
 server <- function(input, output, session) {
   
-  observe({
-    updateSelectizeInput(session, "comp", choices = fcomp(input$perim))
+  observeEvent({input$perim},
+    {
+      updateSelectizeInput(session, "comp", choices = fcomp(input$perim), selected = "Pas de comparaison")
   })
   
-  observe({
-    updateSelectizeInput(session, "perim", choices = listeapp(input$tableChooser))
-  })
+  observeEvent({
+    input$tableChooser},
+    {
+      updateSelectizeInput(session, "perim", choices = listeapp(input$tableChooser))
+    })
   
-  observe({
-    
-    data = loaddata(input$perim,today())
+  
+  # observe({
+  #   updateSelectizeInput(session, "comp", choices = fcomp(input$perim))
+  # })
+  
+  observe({   data = loaddata(input$perim,today())
     
     data$value = as.numeric(as.character(data$value))
     
@@ -81,6 +87,8 @@ server <- function(input, output, session) {
     {dateC = file.info(paste0(linkf(input$perim),"/",input$comp))$mtime
     
     dataC = loaddata(input$perim,dateC)
+    
+    if (nrow(dataC) > 1) { 
     
     dataC$value = as.numeric(as.character(dataC$value))
     
@@ -128,7 +136,9 @@ server <- function(input, output, session) {
                                                                                                                                   columnDefs = list(list(width = '120px', targets = "_all")), scrollX = TRUE,
                                                                                                                                   fixedColumns = list(leftColumns = 1, rightColumns = 0)),rownames= FALSE) %>%
               DT::formatStyle(columns = c(liste_date,as.character(format(Sys.Date(), "%Y"))), color = 'red')})
-    })}
+    }) }
+    
+    else {lapply(1:2, function(amtTable) {output[[paste0("table", amtTable)]] <- DT::renderDT({DT::datatable(data.frame(info = NA))})})} }
     
     else {
     
@@ -168,13 +178,12 @@ server <- function(input, output, session) {
     })
   })
     
-  observe({ data = loaddata(input$perim,today())
-  
+  observe({   data = loaddata(input$perim,today())
+
   data4 = data %>%
       distinct() %>%
       pivot_wider(., names_from = time, values_from = value)
-    
-    
+  
     
     rhan1 = rhandsondata1(data,input$num)
     

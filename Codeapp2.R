@@ -39,8 +39,12 @@ loaddata <- function(perim,date) {
     else {result = test %>%
       filter(mtime == date)}
     
-    resultf = rownames(result)
+    if (nrow(result) == 0) {dataF_ <- data.frame(name = NA)}
     
+
+    else {
+    
+    resultf = rownames(result)
     load(resultf)
     list_df = list()
     
@@ -76,7 +80,7 @@ loaddata <- function(perim,date) {
     data2 = data2 %>%
       select(name, time, value)
     
-    dataF_ <- data2
+    dataF_ <- data2}
     
   }else {
     
@@ -95,6 +99,11 @@ loaddata <- function(perim,date) {
     else {result = test %>%
       filter(mtime == date)}
     
+    if (nrow(result) == 0) {dataF_ <- data.frame(name = NA)}
+    
+    
+    else {
+      
     resultf = rownames(result)
     
     load(resultf)
@@ -143,7 +152,7 @@ loaddata <- function(perim,date) {
     drop <- c("perimetre")
     dataF_ = dataF_[,!(names(dataF_) %in% drop)]
     
-  }
+  }}
   
   
   return(dataF_)
@@ -310,5 +319,4 @@ fcomp <- function(perim)  {if (perim %in% c("AL","BENL","CN","DM","EM","ES","FI"
   return(c("Pas de comparaison",list_file_al)) }
 
 
-fcomp("AL")
 
